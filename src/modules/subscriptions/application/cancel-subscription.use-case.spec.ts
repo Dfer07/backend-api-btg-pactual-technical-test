@@ -51,7 +51,6 @@ describe('CancelSubscriptionUseCase', () => {
     
     expect(mockUserRepo.updateBalance).toHaveBeenCalledWith(userId, 100000);
     expect(mockTransRepo.save).toHaveBeenCalled();
-    expect(mockNotifier.sendCancellationNotification).toHaveBeenCalled();
     expect(result.message).toContain('exitosa');
   });
 

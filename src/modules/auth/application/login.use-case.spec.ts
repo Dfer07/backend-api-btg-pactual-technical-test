@@ -12,6 +12,7 @@ describe('LoginUseCase', () => {
   beforeEach(() => {
     mockUserRepository = {
       findByEmail: jest.fn(),
+      updateRefreshToken: jest.fn(),
     } as any;
 
     mockJwtService = {

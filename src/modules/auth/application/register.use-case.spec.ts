@@ -14,9 +14,9 @@ describe('RegisterUseCase', () => {
       save: jest.fn(),
       findByEmail: jest.fn(),
       findById: jest.fn(),
-      updateBalance: jest.fn(),
       updateNotificationPreference: jest.fn(),
       findAll: jest.fn(),
+      updateRefreshToken: jest.fn(),
     } as any;
 
     mockJwtService = {
