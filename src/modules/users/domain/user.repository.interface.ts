@@ -6,6 +6,7 @@ export interface IUserRepository {
   findByEmail(email: string): Promise<User | null>;
   updateBalance(userId: string, newBalance: number): Promise<void>;
   updateNotificationPreference(userId: string, preference: string): Promise<void>;
+  updateRefreshToken(userId: string, hash: string | null): Promise<void>;
   findAll(): Promise<User[]>;
 }
 

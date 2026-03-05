@@ -28,11 +28,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       ? (message as any).message || (message as any).error || JSON.stringify(message)
       : message;
 
+    const isDev = process.env.NODE_ENV === 'development';
+
     response.status(status).json({
       statusCode: status,
       message: normalizedMessage,
-      error_detail: (exception as any).message,
-      stack: (exception as any).stack,
+      error_detail: isDev ? (exception as any).message : undefined,
+      stack: isDev ? (exception as any).stack : undefined,
       timestamp: new Date().toISOString(),
       path: request.url,
     });

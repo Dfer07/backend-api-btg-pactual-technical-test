@@ -3,6 +3,7 @@ import { IUserRepository } from '../../users/domain/user.repository.interface';
 import { User } from '../../users/domain/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
@@ -41,10 +42,17 @@ export class RegisterUseCase {
     await this.userRepository.save(user);
 
     const payload = { userId: user.userId, email: user.email, role: user.role };
+    const accessToken = this.jwtService.sign(payload);
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+
+    // Hash and save refresh token (pre-hash with SHA256 to bypass bcrypt 72-byte limit)
+    const refreshTokenSha = crypto.createHash('sha256').update(refreshToken).digest('hex');
+    const refreshTokenHash = await bcrypt.hash(refreshTokenSha, 10);
+    await this.userRepository.updateRefreshToken(user.userId, refreshTokenHash);
     
     return {
-      accessToken: this.jwtService.sign(payload),
-      refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }), // Simplificado para la prueba
+      accessToken,
+      refreshToken,
       user: {
         userId: user.userId,
         email: user.email,

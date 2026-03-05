@@ -1,17 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
+import { IUserRepository } from '../../users/domain/user.repository.interface';
 
 @Injectable()
 export class LogoutUseCase {
+  constructor(
+    @Inject(IUserRepository)
+    private userRepository: IUserRepository,
+  ) {}
+
   /**
-   * Realiza el cierre de sesión.
-   * Al ser JWT stateless, el servidor devuelve un mensaje de éxito para que el frontend
-   * proceda a eliminar los tokens de su almacenamiento local.
+   * Realiza el cierre de sesión invalidando el refresh token en base de datos.
    * 
-   * @returns Mensaje de éxito
+   * @param userId ID del usuario
    */
-  async execute() {
+  async execute(userId: string) {
+    await this.userRepository.updateRefreshToken(userId, null);
+    
     return {
-      message: 'Cierre de sesión exitoso. Por favor, elimine los tokens en el cliente.',
+      message: 'Cierre de sesión exitoso.',
     };
   }
 }

@@ -73,6 +73,20 @@ export class DynamoUserRepository implements IUserRepository {
     );
   }
 
+  async updateRefreshToken(userId: string, hash: string | null): Promise<void> {
+    await this.dynamoService.getDocumentClient().send(
+      new UpdateCommand({
+        TableName: this.tableName,
+        Key: { userId },
+        UpdateExpression: 'set refreshTokenHash = :hash, updatedAt = :updatedAt',
+        ExpressionAttributeValues: {
+          ':hash': hash,
+          ':updatedAt': new Date().toISOString(),
+        },
+      }),
+    );
+  }
+
   async findAll(): Promise<User[]> {
     const result = await this.dynamoService.getDocumentClient().send(
       new ScanCommand({

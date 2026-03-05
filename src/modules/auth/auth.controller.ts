@@ -1,10 +1,11 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Req } from '@nestjs/common';
 import { RegisterUseCase } from './application/register.use-case';
 import { LoginUseCase } from './application/login.use-case';
 import { RefreshTokenUseCase } from './application/refresh-token.use-case';
 import { LogoutUseCase } from './application/logout.use-case';
 import { RegisterDto, LoginDto, RefreshTokenDto } from './dto/auth.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @Controller('auth')
 @UseGuards(ThrottlerGuard)
@@ -34,8 +35,9 @@ export class AuthController {
   }
 
   @Post('logout')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async logout() {
-    return this.logoutUseCase.execute();
+  async logout(@Req() req: any) {
+    return this.logoutUseCase.execute(req.user.userId);
   }
 }

@@ -12,6 +12,7 @@ export class User {
     public balance: number,
     public readonly createdAt: string,
     public updatedAt: string,
+    public refreshTokenHash?: string,
   ) {}
 
   static create(
