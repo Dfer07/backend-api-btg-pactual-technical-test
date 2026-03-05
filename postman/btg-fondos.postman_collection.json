@@ -1,0 +1,191 @@
+{
+	"info": {
+		"_postman_id": "c1a2b3c4-d5e6-4f7g-8h9i-0j1k2l3m4n5o",
+		"name": "BTG Pactual Fondos API",
+		"description": "Colección para probar el backend de gestión de fondos de inversión.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"cliente@example.com\",\n    \"password\": \"password123\",\n    \"fullName\": \"Juan Perez\",\n    \"phone\": \"+573001234567\",\n    \"notificationPreference\": \"EMAIL\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{base_url}}/auth/register", "host": ["{{base_url}}"], "path": ["auth", "register"] }
+					}
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"cliente@example.com\",\n    \"password\": \"password123\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"] }
+					}
+				},
+				{
+					"name": "Refresh",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refresh_token}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{base_url}}/auth/refresh", "host": ["{{base_url}}"], "path": ["auth", "refresh"] }
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+						"url": { "raw": "{{base_url}}/auth/logout", "host": ["{{base_url}}"], "path": ["auth", "logout"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "Funds",
+			"item": [
+				{
+					"name": "List Funds",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+						"url": { "raw": "{{base_url}}/funds", "host": ["{{base_url}}"], "path": ["funds"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+						"url": { "raw": "{{base_url}}/users/me", "host": ["{{base_url}}"], "path": ["users", "me"] }
+					}
+				},
+				{
+					"name": "Update Notification Preference",
+					"request": {
+						"method": "PATCH",
+						"header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"notificationPreference\": \"SMS\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{base_url}}/users/me/notification-preference", "host": ["{{base_url}}"], "path": ["users", "me", "notification-preference"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "Subscriptions",
+			"item": [
+				{
+					"name": "Subscribe",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fundId\": \"PASTE_FUND_ID_HERE\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{base_url}}/subscriptions/subscribe", "host": ["{{base_url}}"], "path": ["subscriptions", "subscribe"] }
+					}
+				},
+				{
+					"name": "Cancel",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fundId\": \"PASTE_FUND_ID_HERE\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{base_url}}/subscriptions/cancel", "host": ["{{base_url}}"], "path": ["subscriptions", "cancel"] }
+					}
+				},
+				{
+					"name": "Active Subscriptions",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+						"url": { "raw": "{{base_url}}/subscriptions/active", "host": ["{{base_url}}"], "path": ["subscriptions", "active"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "Transactions",
+			"item": [
+				{
+					"name": "My History",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+						"url": { "raw": "{{base_url}}/transactions/history", "host": ["{{base_url}}"], "path": ["transactions", "history"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"description": "Endpoints exclusivos para usuarios con el rol ADMIN. Requieren un JWT válido de administrador.",
+			"item": [
+				{
+					"name": "List All Users",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+						"description": "Obtiene la lista completa de usuarios registrados en el sistema.",
+						"url": { "raw": "{{base_url}}/admin/users", "host": ["{{base_url}}"], "path": ["admin", "users"] }
+					}
+				},
+				{
+					"name": "List All Transactions",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+						"description": "Obtiene el historial global de todas las transacciones de vinculación y desvinculación de todos los clientes.",
+						"url": { "raw": "{{base_url}}/admin/transactions", "host": ["{{base_url}}"], "path": ["admin", "transactions"] }
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": { "type": "text/javascript", "exec": [""] }
+		},
+		{
+			"listen": "test",
+			"script": { "type": "text/javascript", "exec": [""] }
+		}
+	],
+	"variable": [
+		{ "key": "base_url", "value": "http://localhost:3000/api/v1" },
+		{ "key": "access_token", "value": "" }
+	]
+}

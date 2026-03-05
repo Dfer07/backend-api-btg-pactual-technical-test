@@ -1,0 +1,133 @@
+service: btg-pactual-fondos
+frameworkVersion: '3'
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  memorySize: 512
+  timeout: 30
+  environment:
+    NODE_ENV: ${self:provider.stage}
+    PORT: 3000
+    JWT_SECRET: ${env:JWT_SECRET, ''}
+    JWT_EXPIRES_IN: ${env:JWT_EXPIRES_IN, ''}
+    JWT_REFRESH_SECRET: ${env:JWT_REFRESH_SECRET, ''}
+    JWT_REFRESH_EXPIRES_IN: ${env:JWT_REFRESH_EXPIRES_IN, ''}
+    AWS_REGION_NAME: ${self:provider.region}
+    DYNAMO_USERS_TABLE: ${self:custom.tables.users}
+    DYNAMO_FUNDS_TABLE: ${self:custom.tables.funds}
+    DYNAMO_SUBSCRIPTIONS_TABLE: ${self:custom.tables.subscriptions}
+    DYNAMO_TRANSACTIONS_TABLE: ${self:custom.tables.transactions}
+    DYNAMO_ENDPOINT: ${env:DYNAMO_ENDPOINT, ''}
+    SMTP_HOST: ${env:SMTP_HOST, 'smtp.gmail.com'}
+    SMTP_PORT: ${env:SMTP_PORT, '465'}
+    SMTP_USER: ${env:SMTP_USER, ''}
+    SMTP_PASS: ${env:SMTP_PASS, ''}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:Query
+            - dynamodb:Scan
+          Resource:
+            - !GetAtt UsersTable.Arn
+            - !Sub "${UsersTable.Arn}/index/*"
+            - !GetAtt FundsTable.Arn
+            - !GetAtt SubscriptionsTable.Arn
+            - !GetAtt TransactionsTable.Arn
+
+custom:
+  tables:
+    users: btg-users-${self:provider.stage}
+    funds: btg-funds-${self:provider.stage}
+    subscriptions: btg-subscriptions-${self:provider.stage}
+    transactions: btg-transactions-${self:provider.stage}
+
+functions:
+  api:
+    handler: dist/lambda.handler
+    events:
+      - http:
+          path: /api/v1
+          method: any
+          cors: true
+      - http:
+          path: /api/v1/{proxy+}
+          method: any
+          cors: true
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tables.users}
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+          - IndexName: EmailIndex
+            KeySchema:
+              - AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+    FundsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tables.funds}
+        AttributeDefinitions:
+          - AttributeName: fundId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: fundId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    SubscriptionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tables.subscriptions}
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: fundId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: fundId
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+
+    TransactionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tables.transactions}
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: transactionId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: transactionId
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
