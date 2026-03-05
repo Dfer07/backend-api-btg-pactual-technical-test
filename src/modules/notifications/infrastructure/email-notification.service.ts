@@ -20,6 +20,15 @@ export class EmailNotificationService implements INotificationService {
         pass: this.configService.get<string>('mail.pass'),
       },
     });
+
+    // Verificar conexión al iniciar
+    this.transporter.verify((error, success) => {
+      if (error) {
+        console.error('[MAIL SMTP] Error de conexión:', error.message);
+      } else {
+        console.log('[MAIL SMTP] Servidor listo para enviar mensajes');
+      }
+    });
   }
 
   async sendSubscriptionNotification(params: NotificationParams, preference: NotificationType): Promise<string | null> {

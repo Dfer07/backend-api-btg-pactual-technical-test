@@ -11,6 +11,7 @@ provider:
   timeout: 30
   environment:
     NODE_ENV: ${self:provider.stage}
+    FRONTEND_URL: ${env:FRONTEND_URL, ''}
     PORT: 3000
     JWT_SECRET: ${env:JWT_SECRET, ''}
     JWT_EXPIRES_IN: ${env:JWT_EXPIRES_IN, ''}

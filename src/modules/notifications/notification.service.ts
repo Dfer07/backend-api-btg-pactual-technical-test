@@ -22,6 +22,7 @@ export class NotificationService implements INotificationService {
     params: NotificationParams, 
     preference: NotificationType
   ): Promise<string | null> {
+    console.log(`[NOTIFICATION] Procesando notificación. Preferencia detectada: ${preference} para ${params.userEmail}`);
     if (preference === NotificationType.SMS) {
       return this.smsService.sendSubscriptionNotification(params, preference);
     }
