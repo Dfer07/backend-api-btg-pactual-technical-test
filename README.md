@@ -11,7 +11,7 @@ Construido con NestJS · TypeScript · AWS Lambda · DynamoDB
 [![DynamoDB](https://img.shields.io/badge/DynamoDB-NoSQL-4053D6?style=for-the-badge&logo=amazon-dynamodb&logoColor=white)](https://aws.amazon.com/dynamodb/)
 [![Jest](https://img.shields.io/badge/Jest-Tests-C21325?style=for-the-badge&logo=jest&logoColor=white)](https://jestjs.io/)
 
-[Características](#-características) · [Arquitectura](#-arquitectura) · [Instalación local](#-instalación-local) · [Despliegue AWS](#-despliegue-en-aws) · [API Docs](#-documentación-de-la-api) · [Tests](#-pruebas)
+[Características](#-características) · [Arquitectura](#️-arquitectura) · [Instalación local](#-instalación-local) · [Despliegue en AWS](#️-despliegue-en-aws) · [API Docs](#-documentación-de-la-api) · [Tests](#-pruebas)
 
 </div>
 
@@ -39,7 +39,7 @@ Desarrollado como prueba técnica aplicando **Clean Architecture**, **DDD**, y d
 
 ---
 
-## 🏗️ Arquitectura
+## 🛠️ Arquitectura
 
 El proyecto implementa **Clean Architecture** con separación estricta en tres capas por módulo. Para mayor claridad de la arquitectura se puede consultar el archivo [ARCHITECTURE.md](ARCHITECTURE.md).
 
@@ -78,6 +78,7 @@ src/
 ## 🔐 Flujo de Autenticación
 
 ```
+
 REGISTER / LOGIN                     USAR TOKEN               RENOVAR
 ─────────────────                    ──────────               ───────
 POST /auth/register                  GET /funds               POST /auth/refresh
@@ -145,8 +146,11 @@ docker run -d \
 ```bash
 npm run seed
 ```
+
 ### Pruebas de Administrador (Admin)
+
 Se ha incluido un usuario administrador por defecto mediante el script de seed:
+
 - **Email**: `admin@btgpactual.com`
 - **Password**: `AdminPassword123!`
 
@@ -163,7 +167,7 @@ npm run start:dev
 
 ## ☁️ Despliegue en AWS
 
-### Pre-requisitos
+### Primeros pasos
 
 ```bash
 npm install -g serverless
@@ -257,6 +261,7 @@ Por defecto, el sistema se inicializa (mediante el script `seed`) con los siguie
 ```
 
 **Reglas de negocio:**
+
 - Saldo insuficiente → `400` con mensaje exacto
 - Ya suscrito al fondo → `409`
 - Al cancelar → se devuelve el monto invertido al saldo
@@ -365,14 +370,6 @@ npm run lint          # ESLint
 npm run seed          # Cargar fondos en DynamoDB
 npm run deploy        # Build + deploy a AWS
 ```
-
----
-
-## 📐 Decisiones de Diseño
-
-Para la explicación detallada de arquitectura, patrones, seguridad avanzada y comparaciones contra otras arquitecturas, consulta:
-
-📄 **[ARCHITECTURE.md](./ARCHITECTURE.md)**
 
 ---
 

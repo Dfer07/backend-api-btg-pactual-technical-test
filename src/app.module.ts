@@ -10,6 +10,7 @@ import { SubscriptionsModule } from './modules/subscriptions/subscriptions.modul
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { NotificationModule } from './modules/notifications/notification.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { AppController } from './app.controller';
 
 import Joi from 'joi';
 
@@ -49,5 +50,6 @@ import Joi from 'joi';
     NotificationModule,
     AdminModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
