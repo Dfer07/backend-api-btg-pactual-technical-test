@@ -19,7 +19,7 @@ Construido con NestJS · TypeScript · AWS Lambda · DynamoDB
 
 ## 📋 Descripción
 
-API REST para una plataforma de fondos de inversión. Permite a clientes registrarse, suscribirse y cancelar suscripciones a fondos, recibir notificaciones por email o SMS, y consultar su historial de transacciones. El módulo de administración expone endpoints exclusivos para el rol `ADMIN`.
+API REST para una plataforma de fondos de inversión. Permite a clientes registrarse, suscribirse y cancelar suscripciones a fondos, recibir notificaciones por email o SMS (simulado por consola), y consultar su historial de transacciones. El módulo de administración expone endpoints exclusivos para el rol `ADMIN`.
 
 Desarrollado como prueba técnica aplicando **Clean Architecture**, **DDD**, y desplegado de forma completamente serverless en AWS.
 
@@ -41,59 +41,7 @@ Desarrollado como prueba técnica aplicando **Clean Architecture**, **DDD**, y d
 
 ## 🏗️ Arquitectura
 
-El proyecto implementa **Clean Architecture** con separación estricta en tres capas por módulo:
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                        CLIENTE / FRONTEND                    │
-└─────────────────────────────┬────────────────────────────────┘
-                              │ HTTPS
-                              ▼
-┌──────────────────────────────────────────────────────────────┐
-│                      AWS API GATEWAY                         │
-│              /api/v1  ·  /api/v1/{proxy+}                    │
-└─────────────────────────────┬────────────────────────────────┘
-                              │
-                              ▼
-┌──────────────────────────────────────────────────────────────┐
-│                      AWS LAMBDA                              │
-│              handler: dist/lambda.handler                    │
-│                                                              │
-│  ┌────────────────────────────────────────────────────────┐  │
-│  │           CAPAS TRANSVERSALES (NestJS)                 │  │
-│  │  Helmet · CORS · ThrottlerGuard · ValidationPipe       │  │
-│  │  GlobalExceptionFilter · JwtAuthGuard · RolesGuard     │  │
-│  └────────────────────────────────────────────────────────┘  │
-│                                                              │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌───────────────┐    │
-│  │  /auth   │ │  /users  │ │  /funds  │ │/subscriptions │    │
-│  └──────────┘ └──────────┘ └──────────┘ └───────────────┘    │
-│  ┌──────────────────────┐   ┌───────────────────────────┐    │
-│  │    /transactions     │   │  /admin  ADMIN ONLY       │    │
-│  └──────────────────────┘   └───────────────────────────┘    │
-│                                                              │
-│  ┌────────────────────────────────────────────────────────┐  │
-│  │           CAPA DE APLICACIÓN (Use Cases)               │  │
-│  └────────────────────────────────────────────────────────┘  │
-│  ┌────────────────────────────────────────────────────────┐  │
-│  │              CAPA DE DOMINIO                           │  │
-│  │  User · Fund · Subscription · Transaction · Interfaces │  │
-│  └────────────────────────────────────────────────────────┘  │
-│  ┌────────────────────────────────────────────────────────┐  │
-│  │           CAPA DE INFRAESTRUCTURA                      │  │
-│  │  DynamoRepositories · EmailService · SmsService        │  │
-│  └────────────────────────────────────────────────────────┘  │
-└──────────────┬──────────────────────────┬────────────────────┘
-               │                          │
-               ▼                          ▼
-┌──────────────────────┐      ┌──────────────────────────────┐
-│    AWS DYNAMODB      │      │   SMTP Gmail                 │
-│  btg-users-{stage}   │      │   Notificaciones por email   │
-│  btg-funds-{stage}   │      └──────────────────────────────┘
-│  btg-subs-{stage}    │
-│  btg-txns-{stage}    │
-└──────────────────────┘
-```
+El proyecto implementa **Clean Architecture** con separación estricta en tres capas por módulo. Para mayor claridad de la arquitectura se puede consultar el archivo [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ### 📁 Estructura de Carpetas
 
@@ -154,7 +102,7 @@ POST /auth/login                     Authorization:           { refreshToken }
 ### 1 — Clonar e instalar
 
 ```bash
-git clone <url-del-repo>
+git clone https://github.com/Dfer07/backend-api-btg-pactual-technical-test.git
 cd backend-api-btg-pactual-technical-test
 npm install
 ```
